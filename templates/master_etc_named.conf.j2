@@ -130,10 +130,10 @@ zone "{{ (network | ipaddr('revdns'))[-(9+(network|regex_replace('^.*/','')|int)
 {% endif %}
 };
 
-{% if bind_rpz is defined %}
+{% if bind_rpz is defined and bind_rpz %}
 zone "rpz" {
   type master;
-  file "{{ bind_zone_dir }}/db.rpz";
+  file "{{ bind_zone_dir }}/rpz";
 };
 {% endif %}
 
