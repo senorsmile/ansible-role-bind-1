@@ -48,6 +48,10 @@ options {
 {% if bind_query_log is defined %}
   querylog yes;
 {% endif %}
+
+{% if bind_rpz is defined %}
+  response-policy { zone "rpz"; };
+{% endif %}
 };
 
 logging {
@@ -125,6 +129,15 @@ zone "{{ (network | ipaddr('revdns'))[-(9+(network|regex_replace('^.*/','')|int)
   allow-update { none; };
 {% endif %}
 };
+
+{% if bind_rpz is defined %}
+zone "rpz" {
+  type master;
+  file "{{ bind_zone_dir }}/db.rpz";
+};
+{% endif %}
+
+
 {% endfor %}
 {% endif %}
 {% endfor %}
