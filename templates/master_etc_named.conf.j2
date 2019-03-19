@@ -78,68 +78,68 @@ include "{{ file }}";
 {% endfor %}
 
 {% if bind_zone_domains is defined %}
-{% if bind_rpz is defined and bind_rpz %}
+{%      if bind_rpz is defined and bind_rpz %}
 zone "rpz" {
   type master;
   file "{{ bind_zone_dir }}/rpz";
 };
-{% else %}
-{% for bind_zone in bind_zone_domains %}
+{%      else %}
+{%          for bind_zone in bind_zone_domains %}
 zone "{{ bind_zone.name }}" IN {
   type master;
   file "{{ bind_zone_dir }}/{{ bind_zone.name }}";
   notify yes;
-{% if bind_zone.also_notify is defined %}
+{%              if bind_zone.also_notify is defined %}
   also-notify  { {{ bind_zone.also_notify|join(';') }}; };
-{% endif %}
-{% if bind_zone.allow_update is defined %}
+{%              endif %}
+{%              if bind_zone.allow_update is defined %}
   allow-update { {{ bind_zone.allow_update|join(';') }}; };
-{% else %}
+{%              else %}
   allow-update { none; };
-{% endif %}
-{% if bind_zone.delegate is defined %}
+{%              endif %}
+{%              if bind_zone.delegate is defined %}
   forwarders {};
-{% endif %}
-{% endif %}
+{%              endif %}
 };
 
-{% if bind_zone.networks is defined %}
-{% for network in bind_zone.networks %}
+{%              if bind_zone.networks is defined %}
+{%                  for network in bind_zone.networks %}
 zone "{{ ('.'.join(network.replace(network+'.','').split('.')[::-1])) }}.in-addr.arpa" IN {
   type master;
   file "{{ bind_zone_dir }}/{{ ('.'.join(network.replace(network+'.','').split('.')[::-1])) }}.in-addr.arpa";
   notify yes;
-{% if bind_zone.also_notify is defined %}
+{%                      if bind_zone.also_notify is defined %}
   also-notify  { {{ bind_zone.also_notify|join(';') }}; };
-{% endif %}
-{% if bind_zone.allow_update is defined %}
+{%                      endif %}
+{%                      if bind_zone.allow_update is defined %}
   allow-update { {{ bind_zone.allow_update|join(';') }}; };
-{% else %}
+{%                      else %}
   allow-update { none; };
-{% endif %}
+{%                      endif %}
 };
-{% endfor %}
-{% endif %}
+{%                  endfor %}
+{%              endif %}
 
-{% if bind_zone.ipv6_networks is defined %}
-{% for network in bind_zone.ipv6_networks %}
+{%              if bind_zone.ipv6_networks is defined %}
+{%                  for network in bind_zone.ipv6_networks %}
 zone "{{ (network | ipaddr('revdns'))[-(9+(network|regex_replace('^.*/','')|int)//2):] }}" IN {
   type master;
   file "{{ bind_zone_dir }}/{{ (network | ipaddr('revdns'))[-(9+(network|regex_replace('^.*/','')|int)//2):-1] }}";
   notify yes;
-{% if bind_zone.also_notify is defined %}
+{%                      if bind_zone.also_notify is defined %}
   also-notify  { {{ bind_zone.also_notify|join(';') }}; };
-{% endif %}
-{% if bind_zone.allow_update is defined %}
+{%                      endif %}
+{%                      if bind_zone.allow_update is defined %}
   allow-update { {{ bind_zone.allow_update|join(';') }}; };
-{% else %}
+{%                      else %}
   allow-update { none; };
-{% endif %}
+{%                      endif %}
 };
 
 
 
-{% endfor %}
-{% endif %}
-{% endfor %}
+{%                  endfor %}
+{%              endif %}
+{%          endfor %}
+{%      endif %}
 {% endif %}
