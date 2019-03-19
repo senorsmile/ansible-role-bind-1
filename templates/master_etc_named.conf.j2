@@ -78,6 +78,12 @@ include "{{ file }}";
 {% endfor %}
 
 {% if bind_zone_domains is defined %}
+{% if bind_rpz is defined and bind_rpz %}
+zone "rpz" {
+  type master;
+  file "{{ bind_zone_dir }}/rpz";
+};
+{% else %}
 {% for bind_zone in bind_zone_domains %}
 zone "{{ bind_zone.name }}" IN {
   type master;
@@ -93,6 +99,7 @@ zone "{{ bind_zone.name }}" IN {
 {% endif %}
 {% if bind_zone.delegate is defined %}
   forwarders {};
+{% endif %}
 {% endif %}
 };
 
@@ -130,12 +137,6 @@ zone "{{ (network | ipaddr('revdns'))[-(9+(network|regex_replace('^.*/','')|int)
 {% endif %}
 };
 
-{% if bind_rpz is defined and bind_rpz == true %}
-zone "rpz" {
-  type master;
-  file "{{ bind_zone_dir }}/rpz";
-};
-{% endif %}
 
 
 {% endfor %}
