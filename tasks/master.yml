@@ -17,8 +17,8 @@
 - name: Master | Create forward lookup zone file
   template:
     src: bind_zone.j2
-    #dest: "{{ bind_zone_dir }}/{% if 'rpz' in item and item.rpz == true %}rpz{% else %}{{ item.name }}{% endif %}"
-    dest: "{{ bind_zone_dir }}/{{ item.name }}"
+    dest: "{{ bind_zone_dir }}/{% if 'rpz' in item and item.rpz == true %}rpz{% else %}{{ item.name }}{% endif %}"
+    #dest: "{{ bind_zone_dir }}/{{ item.name }}"
     owner: "{{ bind_owner }}"
     group: "{{ bind_group }}"
     mode: "{{ bind_zone_file_mode }}"
